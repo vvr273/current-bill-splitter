@@ -52,25 +52,30 @@ bill-splitter-project/
 ```bash
 git clone https://github.com/your-username/bill-splitter-project.git
 cd bill-splitter-project
+```
 
-# 2. Setup Backend
-
+### 2. Setup Backend
+```bash
 cd currentbillbackend
 npm install
-
+```
 # Create .env file
+```bash
 touch .env
-
-Add this to .env:
-
+```
+### Add this to .env:
+``` text
 PORT=5000
 FIREBASE_SERVICE_KEY=your_service_account_JSON_on_single_line
-
+```
 Then run:
+```bash
 node index.js
+```
 
-
-3. Setup Frontend
+### 3 Setup Frontend
+```bash
 cd ../bill-splitter-frontend
 npm install
 npm run dev
+```
