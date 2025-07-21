@@ -2,72 +2,143 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Current Bill Splitter</title>
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
-  />
+  <title>Bill Splitter Simulator</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: center; }
+    th { background: #eee; }
+    h2 { margin-top: 30px; }
+    .note { font-size: 0.9em; color: #555; }
+  </style>
 </head>
 <body>
-  <section class="hero is-link is-bold">
-    <div class="hero-body">
-      <div class="container has-text-centered">
-        <h1 class="title">⚡ Current Bill Splitter</h1>
-        <h2 class="subtitle">Split electricity bills easily using submeters</h2>
-      </div>
-    </div>
-  </section>
 
-  <section class="section">
-    <div class="container">
+  <h1>🔢 Bill Splitter Simulator</h1>
+  <button onclick="runSimulation()">📊 Calculate</button>
 
-      <!-- 🔧 Add House Form -->
-      <div class="box">
-        <h2 class="title is-4">🏠 Add New House</h2>
-        <div class="field has-addons">
-          <div class="control is-expanded">
-            <input class="input is-medium" type="text" placeholder="Enter house name">
-          </div>
-          <div class="control">
-            <button class="button is-success is-medium">➕ Add House</button>
-          </div>
-        </div>
-      </div>
+  <div id="output"></div>
 
-      <!-- 🏘️ Existing Houses -->
-      <div class="box">
-        <h2 class="title is-4">🏘️ Existing Houses</h2>
+  <script>
+    function calculateBillSplit(data) {
+      let result = [];
+      let subTotals = {
+        submeter: 0,
+        other: 0,
+      };
 
-        <article class="media">
-          <div class="media-left">
-            <span class="icon has-text-success"><i class="fas fa-home"></i></span>
-          </div>
-          <div class="media-content">
-            <p>Green Villa</p>
-          </div>
-          <div class="media-right">
-            <button class="button is-link is-small">➡ Add Bill</button>
-          </div>
-        </article>
+      const submeterMap = {};
+      for (let row of data) {
+        if (row.sub !== "") submeterMap[row.month] = parseFloat(row.sub);
+      }
 
-        <article class="media">
-          <div class="media-left">
-            <span class="icon has-text-success"><i class="fas fa-home"></i></span>
-          </div>
-          <div class="media-content">
-            <p>Blue Nest</p>
-          </div>
-          <div class="media-right">
-            <button class="button is-link is-small">➡ Add Bill</button>
-          </div>
-        </article>
+      const months = data.map(row => row.month);
 
-      </div>
-    </div>
-  </section>
+      for (let i = 1; i < months.length; i++) {
+        const month = months[i];
+        const prevMonth = months[i - 1];
+        const current = data.find(d => d.month === month);
+        const previous = data.find(d => d.month === prevMonth);
 
-  <!-- Font Awesome for icons -->
-  <script src="https://kit.fontawesome.com/a2e4e1c3b4.js" crossorigin="anonymous"></script>
+        const mainUnits = parseFloat(current.mainUnits);
+        const mainBill = parseFloat(current.mainBill);
+        const unitPrice = mainBill / mainUnits;
+
+        let subUsed = 0;
+        let note = "";
+
+        if (submeterMap[prevMonth] !== undefined && submeterMap[month] !== undefined) {
+          subUsed = submeterMap[month] - submeterMap[prevMonth];
+        } else {
+          let lastAvailableMonth = prevMonth;
+          while (!submeterMap[lastAvailableMonth] && months.indexOf(lastAvailableMonth) > 0) {
+            lastAvailableMonth = months[months.indexOf(lastAvailableMonth) - 1];
+          }
+
+          let nextAvailableMonth = month;
+          while (!submeterMap[nextAvailableMonth] && months.indexOf(nextAvailableMonth) < months.length - 1) {
+            nextAvailableMonth = months[months.indexOf(nextAvailableMonth) + 1];
+          }
+
+          if (
+            submeterMap[lastAvailableMonth] !== undefined &&
+            submeterMap[nextAvailableMonth] !== undefined &&
+            lastAvailableMonth !== nextAvailableMonth
+          ) {
+            const subTotal = submeterMap[nextAvailableMonth] - submeterMap[lastAvailableMonth];
+
+            const missingMonths = [];
+            const startIndex = months.indexOf(lastAvailableMonth) + 1;
+            const endIndex = months.indexOf(nextAvailableMonth);
+
+            for (let j = startIndex; j <= endIndex; j++) {
+              missingMonths.push(months[j]);
+            }
+
+            const totalUnits = missingMonths.reduce((acc, m) => acc + parseFloat(data.find(d => d.month === m).mainUnits), 0);
+            const totalBill = missingMonths.reduce((acc, m) => acc + parseFloat(data.find(d => d.month === m).mainBill), 0);
+
+            subUsed = (subTotal * parseFloat(current.mainUnits)) / totalUnits;
+            note = "🔗 Bridged";
+          }
+        }
+
+        const subBill = +(subUsed * unitPrice).toFixed(2);
+        const otherBill = +(mainBill - subBill).toFixed(2);
+
+        result.push({
+          month,
+          units: mainUnits,
+          bill: mainBill,
+          subUsed: +subUsed.toFixed(2),
+          subBill,
+          otherBill,
+          note,
+        });
+
+        subTotals.submeter += subBill;
+        subTotals.other += otherBill;
+      }
+
+      return { monthly: result, totals: subTotals };
+    }
+
+    function runSimulation() {
+      const data = [
+        { month: "2025-02", mainUnits: 300, mainBill: 1800, sub: "768" },
+        { month: "2025-03", mainUnits: 285, mainBill: 1800, sub: "820" },
+        { month: "2025-04", mainUnits: 305, mainBill: 1850, sub: "886" },
+        { month: "2025-05", mainUnits: 260, mainBill: 1700, sub: "" },
+        { month: "2025-06", mainUnits: 300, mainBill: 1800, sub: "1094" },
+        { month: "2025-07", mainUnits: 350, mainBill: 1850, sub: "1140" },
+      ];
+
+      const outputDiv = document.getElementById("output");
+      const { monthly, totals } = calculateBillSplit(data);
+
+      let html = `<h2>📊 Monthly Breakdown</h2><table><tr>
+        <th>Month</th><th>Units</th><th>Bill ₹</th><th>Sub Used</th><th>Sub ₹</th><th>Other ₹</th><th>Note</th>
+      </tr>`;
+
+      for (const row of monthly) {
+        html += `<tr>
+          <td>${row.month}</td>
+          <td>${row.units}</td>
+          <td>₹${row.bill}</td>
+          <td>${row.subUsed}</td>
+          <td>₹${row.subBill}</td>
+          <td>₹${row.otherBill}</td>
+          <td>${row.note || ""}</td>
+        </tr>`;
+      }
+
+      html += `</table>
+        <h2>📦 Final Totals</h2>
+        <p>⚡ Submeter Person: ₹${totals.submeter.toFixed(2)}</p>
+        <p>🧍‍♂️ Other Person: ₹${totals.other.toFixed(2)}</p>`;
+
+      outputDiv.innerHTML = html;
+    }
+  </script>
 </body>
 </html>
