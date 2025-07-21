@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
 import Home from '../pages/Home.jsx'
-import AddBill from '../pages/AddBill.jsx'
 import History from '../pages/History.jsx'
 import Graph from '../pages/Graph.jsx'
 import AddHome from '../pages/AddHome.jsx'
@@ -19,22 +18,16 @@ function App() {
       <Route path="/add-home" element={<AddHome />} />
       
       
-      {/* <Route path="/add-bill/:houseName" element={<AddBill />} /> */}
+     
       <Route path="/add-bill/:houseName" element={<AddBillPage />} />
 
-      {/* <Route path="/graph" element={<Graph />} /> */}
-
-      {/* Add bill for a house with monthly or range input */}
-        {/* <Route path="/add-bill/:houseName" element={<AddBill />} /> */}
-
-        {/* Graphs page for selected house */}
+     
         <Route path="/graph/:houseName" element={<Graph />} />
 
-        {/* Full billing history for a house */}
-        {/* <Route path="/history/:houseName" element={<History />} /> */}
+       
         <Route path="/history/:houseName" element={<HistoryPage />} />
 
-      {/* <Route path="/graph/:houseName" element={<Graph />} /> */}
+     
     </Routes>
   )
 }
