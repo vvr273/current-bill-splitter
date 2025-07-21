@@ -244,7 +244,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { calculateBillSplit } from "../src/utils/calculateBillSplit";
+import { calculateBillSplit } from "./calculateBillSplit";
 import { addBill } from "../api";
 
 export default function AddBillPage() {
