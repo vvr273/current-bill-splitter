@@ -4,7 +4,7 @@ import cors from "cors";
 import admin from "firebase-admin";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-import { calculateBillSplit } from "./calculateBillSplit"; // Adjust the path as needed
+import { calculateBillSplit } from "./calculateBillSplit.js"; // Adjust the path as needed
 // const serviceAccount = require("./serviceAccountKey.json");
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_KEY);
 import dotenv from "dotenv";
