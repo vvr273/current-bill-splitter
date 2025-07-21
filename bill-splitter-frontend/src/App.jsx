@@ -34,7 +34,7 @@ function App() {
         {/* <Route path="/history/:houseName" element={<History />} /> */}
         <Route path="/history/:houseName" element={<HistoryPage />} />
 
-      
+      {/* <Route path="/graph/:houseName" element={<Graph />} /> */}
     </Routes>
   )
 }

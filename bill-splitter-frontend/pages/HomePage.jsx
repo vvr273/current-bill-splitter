@@ -1,94 +1,7 @@
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 
-// export default function HomePage() {
-//   const [houseName, setHouseName] = useState("");
-//   const [houses, setHouses] = useState([]);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchHouses = async () => {
-//       try {
-//         const res = await axios.get("http://localhost:5000/api/houses");
-//         setHouses(res.data.houses || []);
-//       } catch (err) {
-//         console.error("Error fetching houses");
-//       }
-//     };
-//     fetchHouses();
-//   }, []);
-
-//   const handleAddHouse = async () => {
-//     if (!houseName.trim()) return;
-//     try {
-//       await axios.post(`http://localhost:5000/api/add-house/${houseName}`);
-//       navigate(`/add-bill/${houseName}`);
-//     } catch (err) {
-//       alert("Failed to add house");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-100">
-//       {/* Header */}
-//       <header className="bg-blue-600 text-white text-center py-6">
-//         <h1 className="text-3xl font-bold">⚡ Current Bill Splitter</h1>
-//         <p className="text-sm mt-2">Split electricity bills easily using submeters</p>
-//       </header>
-
-//       {/* Main Content */}
-//       <main className="max-w-xl mx-auto mt-8 px-4 space-y-6">
-//         {/* Add House */}
-//         <div className="bg-white rounded shadow p-4 space-y-3">
-//           <h2 className="text-xl font-semibold">🏠 Add New House</h2>
-//           <div className="flex gap-2">
-//             <input
-//               type="text"
-//               placeholder="Enter house name"
-//               value={houseName}
-//               onChange={(e) => setHouseName(e.target.value)}
-//               className="flex-1 px-3 py-2 rounded border"
-//             />
-//             <button
-//               className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-//               onClick={handleAddHouse}
-//             >
-//               ➕ Add
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Existing Houses */}
-//         <div className="bg-white rounded shadow p-4 space-y-3">
-//           <h2 className="text-xl font-semibold">🏘️ Existing Houses</h2>
-//           {houses.length === 0 ? (
-//             <p className="text-gray-500">No houses found.</p>
-//           ) : (
-//             houses.map((house) => (
-//               <div
-//                 key={house}
-//                 className="flex justify-between items-center border-b py-2"
-//               >
-//                 <span>{house}</span>
-//                 <button
-//                   onClick={() => navigate(`/add-bill/${house}`)}
-//                   className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-//                 >
-//                   ➡ Add Bill
-//                 </button>
-//               </div>
-//             ))
-//           )}
-//         </div>
-//       </main>
-//     </div>
-//   );
-// }
-// ✅ HomePage.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getHouses, addHouse, deleteHouse } from "../api";
 
 export default function HomePage() {
   const [houses, setHouses] = useState([]);
@@ -100,20 +13,21 @@ export default function HomePage() {
   }, []);
 
   const fetchHouses = async () => {
-    const res = await axios.get("http://localhost:5000/api/houses");
-    setHouses(res.data.houses);
+    const res = await getHouses();
+    if (res.success) setHouses(res.houses);
+    else alert("Failed to fetch houses");
   };
 
   const handleAdd = async () => {
-    if (!newHouse) return;
-    await axios.post(`http://localhost:5000/api/add-house/${newHouse}`);
+    if (!newHouse.trim()) return;
+    await addHouse(newHouse);
     setNewHouse("");
     fetchHouses();
   };
 
   const handleDelete = async (house) => {
     if (!window.confirm(`Delete ${house}?`)) return;
-    await axios.delete(`http://localhost:5000/api/delete-house/${house}`);
+    await deleteHouse(house);
     fetchHouses();
   };
 
