@@ -41,8 +41,36 @@ bill-splitter-project/
 ├── bill-splitter-frontend/ # React + UnoCSS app
 └── currentbillbackend/ # Express API + Firebase
 
-yaml
-Copy
-Edit
 
 
+---
+
+## 🚀 Getting Started (Local Setup)
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/your-username/bill-splitter-project.git
+cd bill-splitter-project
+
+# 2. Setup Backend
+
+cd currentbillbackend
+npm install
+
+# Create .env file
+touch .env
+
+Add this to .env:
+
+PORT=5000
+FIREBASE_SERVICE_KEY=your_service_account_JSON_on_single_line
+
+Then run:
+node index.js
+
+
+3. Setup Frontend
+cd ../bill-splitter-frontend
+npm install
+npm run dev
