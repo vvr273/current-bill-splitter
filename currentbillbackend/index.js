@@ -4,6 +4,7 @@ import cors from "cors";
 import admin from "firebase-admin";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+import { calculateBillSplit } from "./utils/calculateBillSplit.js"; // Adjust the path as needed
 // const serviceAccount = require("./serviceAccountKey.json");
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_KEY);
 import dotenv from "dotenv";
@@ -18,6 +19,7 @@ const db = admin.firestore();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 app.post("/api/add-bill/:houseName", async (req, res) => {
   const { houseName } = req.params;
   const { months } = req.body;
