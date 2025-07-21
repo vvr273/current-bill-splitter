@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Current Bill Splitter</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+  />
+</head>
+<body>
+  <section class="hero is-link is-bold">
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title">⚡ Current Bill Splitter</h1>
+        <h2 class="subtitle">Split electricity bills easily using submeters</h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- 🔧 Add House Form -->
+      <div class="box">
+        <h2 class="title is-4">🏠 Add New House</h2>
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input is-medium" type="text" placeholder="Enter house name">
+          </div>
+          <div class="control">
+            <button class="button is-success is-medium">➕ Add House</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🏘️ Existing Houses -->
+      <div class="box">
+        <h2 class="title is-4">🏘️ Existing Houses</h2>
+
+        <article class="media">
+          <div class="media-left">
+            <span class="icon has-text-success"><i class="fas fa-home"></i></span>
+          </div>
+          <div class="media-content">
+            <p>Green Villa</p>
+          </div>
+          <div class="media-right">
+            <button class="button is-link is-small">➡ Add Bill</button>
+          </div>
+        </article>
+
+        <article class="media">
+          <div class="media-left">
+            <span class="icon has-text-success"><i class="fas fa-home"></i></span>
+          </div>
+          <div class="media-content">
+            <p>Blue Nest</p>
+          </div>
+          <div class="media-right">
+            <button class="button is-link is-small">➡ Add Bill</button>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a2e4e1c3b4.js" crossorigin="anonymous"></script>
+</body>
+</html>
