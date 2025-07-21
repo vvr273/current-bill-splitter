@@ -198,5 +198,5 @@ app.delete("/api/delete-house/:houseName", async (req, res) => {
 });
 
 /** 🚀 Start Server */
-const PORT = 5000;
+const PORT = 5000|| process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ Server running at http://localhost:${PORT}`));
